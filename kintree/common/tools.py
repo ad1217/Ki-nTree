@@ -26,6 +26,10 @@ def cprint(*args, **kwargs):
         silent = False
     if not silent:
         if type(args[0]) is dict:
+            for key in args[0]:
+                # Check for tuple type
+                if type(key) is tuple:
+                    return builtins.print(*args, **kwargs)
             return builtins.print(json.dumps(*args, **kwargs, indent=4, sort_keys=True))
         else:
             try:

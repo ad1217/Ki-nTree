@@ -63,6 +63,7 @@ def get_categories(part_info: dict, supplier_only=False) -> list:
     filter_parameter = 'Function Type'
 
     # Check existing matches
+    cprint(inventree_api.build_category_tree())
     # Load inversed category map
     category_map = config_interface.load_supplier_categories_inversed(supplier_config_path=settings.CONFIG_DIGIKEY_CATEGORIES)
 
@@ -502,12 +503,14 @@ def inventree_create(part_info: dict, categories: list, kicad=False, symbol=None
 
             if supplier_sku:
                 cprint('\n[MAIN]\tCreating supplier part', silent=settings.SILENT)
+                print(f'{manufacturer_name=} | {manufacturer_mpn=}')
                 is_new_supplier_part = inventree_api.is_new_supplier_part(supplier_name=supplier_name,
                                                                           supplier_sku=supplier_sku)
 
                 if not is_new_supplier_part:
                     cprint('[INFO]\tSupplier part already exists, skipping.', silent=settings.SILENT)
                 else:
+                    print(f'{manufacturer_name=} | {manufacturer_mpn=}')
                     # Create a new supplier part
                     is_supplier_part_created = inventree_api.create_supplier_part(part_id=part_pk,
                                                                                   manufacturer_name=manufacturer_name,

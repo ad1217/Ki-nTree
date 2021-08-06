@@ -170,6 +170,32 @@ def is_new_part(category_id: int, part_info: dict) -> int:
     return 0
 
 
+def build_category_tree() -> dict:
+    ''' Build InvenTree category tree '''
+    global inventree_api
+    category_tree = {}
+
+    # Get full list of categories
+    category_list = PartCategory.list(inventree_api)
+
+    # Iterate through list and build tree (only 2 levels deep)
+    for category in category_list:
+        category_header = (category.pk, category.name)
+        # Does it have a parent?
+        if not category.getParentCategory():
+            # Start tree
+            category_tree.update({category_header: []})
+
+            # Get children
+            children = category.getChildCategories()
+
+            # Add children categories
+            for child in children:
+                category_tree[category_header].append((child.pk, child.name))
+
+    return category_tree
+
+
 def create_category(parent: str, name: str):
     ''' Create InvenTree category, use parent for subcategories '''
     global inventree_api
